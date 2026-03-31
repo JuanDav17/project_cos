@@ -1,0 +1,503 @@
+/* ─── Variables ─────────────────────────────────────────── */
+.screen {
+  --mc-bg:        #ffffff;
+  --mc-border:    #e9edf3;
+  --mc-text:      #0f172a;
+  --mc-muted:     #64748b;
+
+  --mc-red-50:    #fdecec;
+  --mc-red-200:   #f3a7a7;
+  --mc-red-400:   #e35b5b;
+
+  --mc-shadow-sm: 0 8px 18px rgba(15, 23, 42, 0.06);
+  --mc-shadow-md: 0 12px 28px rgba(15, 23, 42, 0.10);
+
+  /* ── Derived ── */
+  --mc-surface:      #f8fafc;
+  --mc-border-mid:   #d4dae4;
+  --mc-text-soft:    #94a3b8;
+  --mc-red-hover:    #cf4f4f;
+  --mc-shadow-red:   0 10px 32px rgba(227, 91, 91, 0.22);
+  --mc-shadow-lg:    0 20px 48px rgba(15, 23, 42, 0.12);
+
+  --_card-radius: 24px;
+  --_icon-radius: 14px;
+  --_ease:        cubic-bezier(0.22, 1, 0.36, 1);
+  --_spring:      cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Keyframes ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(28px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+@keyframes borderGlow {
+  0%, 100% { opacity: 0.5; box-shadow: 0 0 0 3px var(--mc-red-50); }
+  50%       { opacity: 1;   box-shadow: 0 0 0 4px var(--mc-red-200); }
+}
+
+@keyframes topLineExpand {
+  from { width: 0; opacity: 0; }
+  to   { width: 80px; opacity: 1; }
+}
+
+@keyframes softPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(227, 91, 91, 0); }
+  50%       { box-shadow: 0 0 0 6px rgba(227, 91, 91, 0.12); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-5px); }
+}
+
+@keyframes scanLine {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(200%); }
+}
+
+/* ─── Screen ────────────────────────────────────────────── */
+.screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  font: inherit;
+
+  /* White-based background with very subtle red warmth */
+  background:
+    radial-gradient(ellipse 60% 55% at 15% 10%, rgba(227, 91, 91, 0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 55% 45% at 85% 90%, rgba(227, 91, 91, 0.03) 0%, transparent 65%),
+    radial-gradient(ellipse 70% 50% at 50% 50%, rgba(15, 23, 42, 0.02) 0%, transparent 80%),
+    #f4f6f9;
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* Dot-grid texture */
+.screen::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(
+    circle,
+    rgba(15, 23, 42, 0.038) 1px,
+    transparent 1px
+  );
+  background-size: 26px 26px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grain overlay */
+.screen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.022'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.5;
+  z-index: 0;
+}
+
+/* ─── Card ──────────────────────────────────────────────── */
+.card {
+  width: 100%;
+  max-width: 860px;
+  padding: 52px 48px 44px;
+  background: var(--mc-bg);
+  border: 1px solid var(--mc-border);
+  border-radius: var(--_card-radius);
+  box-shadow:
+    var(--mc-shadow-lg),
+    0 0 0 1px rgba(255, 255, 255, 0.95) inset;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  animation: cardIn 0.6s var(--_ease) both;
+}
+
+/* Top red accent bar */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 2px;
+  border-radius: 0 0 4px 4px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--mc-red-400),
+    var(--mc-red-200),
+    var(--mc-red-400),
+    transparent
+  );
+  animation: topLineExpand 0.8s 0.3s var(--_ease) both;
+}
+
+/* Scan-line shine effect on entrance */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  animation: scanLine 0.9s 0.2s var(--_ease) both;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ─── Logo placeholder ──────────────────────────────────── */
+.logoWrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+  animation: fadeUp 0.45s var(--_ease) 0.08s both;
+}
+
+.logoPlaceholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  border: 1.5px dashed var(--mc-border-mid);
+  background: var(--mc-surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    border-color  0.3s var(--_ease),
+    box-shadow    0.3s var(--_ease),
+    transform     0.35s var(--_spring),
+    background    0.3s ease;
+  animation: float 5s ease-in-out 1s infinite;
+}
+
+.logoPlaceholder:hover {
+  border-color: var(--mc-red-200);
+  background: var(--mc-red-50);
+  box-shadow: var(--mc-shadow-sm), 0 0 0 4px var(--mc-red-50);
+  transform: scale(1.06);
+}
+
+.logoText {
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--mc-muted);
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.logoPlaceholder:hover .logoText {
+  color: var(--mc-red-400);
+}
+
+/* ─── Heading ───────────────────────────────────────────── */
+.title {
+  margin: 0 0 10px;
+  font: inherit;
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 800;
+  color: var(--mc-text);
+  letter-spacing: -0.025em;
+  text-align: center;
+  animation: fadeUp 0.45s var(--_ease) 0.12s both;
+}
+
+.intro {
+  margin: 0 auto 36px;
+  max-width: 480px;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--mc-muted);
+  text-align: center;
+  animation: fadeUp 0.45s var(--_ease) 0.18s both;
+}
+
+.code {
+  font-family: inherit;
+  font-size: 11.5px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--mc-red-50);
+  color: var(--mc-red-400);
+  border: 1px solid var(--mc-red-200);
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+/* ─── Source Cards Grid ─────────────────────────────────── */
+.zones {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.sourceCard {
+  padding: 32px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  background: var(--mc-surface);
+  border: 1px solid var(--mc-border);
+  border-radius: 16px;
+  cursor: default;
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform      0.3s var(--_ease),
+    box-shadow     0.3s var(--_ease),
+    border-color   0.3s var(--_ease),
+    background     0.3s ease;
+
+  animation: fadeUp 0.45s var(--_ease) calc(0.24s + var(--delay)) both;
+}
+
+/* Top bar that appears on hover */
+.sourceCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--mc-red-400);
+  border-radius: 0 0 3px 3px;
+  transition: width 0.35s var(--_ease);
+}
+
+.sourceCard:hover::before {
+  width: 50%;
+}
+
+/* Inner blush glow on hover */
+.sourceCard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    rgba(227, 91, 91, 0.06),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+
+.sourceCard:hover::after {
+  opacity: 1;
+}
+
+.sourceCard:hover {
+  transform: translateY(-5px);
+  background: var(--mc-bg);
+  border-color: var(--mc-border-mid);
+  box-shadow: var(--mc-shadow-md);
+}
+
+/* ── Icon wrapper ── */
+.iconWrap {
+  width: 54px;
+  height: 54px;
+  border-radius: var(--_icon-radius);
+  background: var(--mc-red-50);
+  color: var(--mc-red-400);
+  border: 1px solid var(--mc-red-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition:
+    transform      0.3s var(--_spring),
+    box-shadow     0.3s var(--_ease),
+    background     0.3s ease,
+    border-color   0.3s ease,
+    color          0.3s ease;
+}
+
+.sourceCard:hover .iconWrap {
+  transform: scale(1.1) rotate(-6deg);
+  background: var(--mc-red-400);
+  border-color: var(--mc-red-400);
+  color: var(--mc-bg);
+  box-shadow: var(--mc-shadow-red);
+}
+
+/* ── Source title ── */
+.sourceTitle {
+  margin: 0;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--mc-text);
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 1.4;
+  transition: color 0.2s ease;
+}
+
+.sourceCard:hover .sourceTitle {
+  color: var(--mc-red-400);
+}
+
+/* ─── Submit Button ─────────────────────────────────────── */
+.submitButton {
+  width: 100%;
+  min-height: 52px;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--mc-red-400);
+  color: var(--mc-bg);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background    0.25s var(--_ease),
+    transform     0.25s var(--_spring),
+    box-shadow    0.25s var(--_ease);
+
+  animation: fadeUp 0.45s var(--_ease) 0.44s both;
+}
+
+/* Shimmer stripe inside button */
+.submitButton::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 35%,
+    rgba(255, 255, 255, 0.18) 50%,
+    transparent 65%
+  );
+  background-size: 200% auto;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.submitButton:hover::before {
+  opacity: 1;
+  animation: shimmer 0.9s var(--_ease) both;
+}
+
+.submitButton:hover {
+  background: var(--mc-red-hover, #cf4f4f);
+  transform: translateY(-2px);
+  box-shadow: var(--mc-shadow-red);
+}
+
+.submitButton:active {
+  transform: translateY(0) scale(0.988);
+  box-shadow: none;
+}
+
+.submitButton svg {
+  transition: transform 0.28s var(--_spring);
+}
+
+.submitButton:hover svg {
+  transform: translateX(4px);
+}
+
+/* Soft pulse ring on idle */
+.submitButton:focus-visible {
+  outline: none;
+  animation: softPulse 1.8s ease-in-out infinite;
+}
+
+/* ─── Hint ──────────────────────────────────────────────── */
+.hint {
+  margin: 14px 0 0;
+  font: inherit;
+  font-size: 11.5px;
+  color: var(--mc-text-soft, #94a3b8);
+  text-align: center;
+  animation: fadeUp 0.45s var(--_ease) 0.5s both;
+}
+
+/* ─── Responsive ────────────────────────────────────────── */
+@media (max-width: 760px) {
+  .card {
+    padding: 36px 24px 32px;
+    border-radius: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  .zones {
+    grid-template-columns: 1fr;
+  }
+
+  .sourceCard {
+    flex-direction: row;
+    padding: 20px 22px;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .sourceCard::before {
+    /* Vertical left bar on mobile */
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .sourceCard:hover::before {
+    width: 2px;
+    height: 50%;
+  }
+
+  .sourceTitle {
+    text-align: left;
+  }
+}
+
+/* ─── Reduced motion ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .screen *,
+  .screen *::before,
+  .screen *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

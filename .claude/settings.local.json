@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Desarrollos/carpeta gei/**)",
+      "Bash(unzip -o \"Codig_Correlaciones.zip\" -d \"Codig_Correlaciones_zip\")",
+      "Bash(rsync -av --exclude='.git' --exclude='node_modules' --exclude='.next' \"Codig_Correlaciones_zip/Codig_Correlaciones/\" \"Codig_Correlaciones/\")",
+      "Bash(cp -r \"Codig_Correlaciones_zip/Codig_Correlaciones/src\" \"Codig_Correlaciones/\")",
+      "Bash(cp -r \"Codig_Correlaciones_zip/Codig_Correlaciones/db\" \"Codig_Correlaciones/\")",
+      "Bash(cp \"Codig_Correlaciones_zip/Codig_Correlaciones/tsconfig.json\" \"Codig_Correlaciones/\")",
+      "Bash(cp \"Codig_Correlaciones_zip/Codig_Correlaciones/package.json\" \"Codig_Correlaciones/\")",
+      "Bash(npx next:*)",
+      "Bash(curl -s http://localhost:3001/api/correlaciones)",
+      "Bash(python3 -c \":*)",
+      "Bash(pkill -f \"next dev\")"
+    ]
+  }
+}
