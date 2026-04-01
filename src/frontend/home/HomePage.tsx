@@ -1,28 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ClipboardCheck, GitCompareArrows, RefreshCw, ArrowRightCircle } from "lucide-react";
+import { GitCompareArrows, ArrowRightCircle } from "lucide-react";
 import logoCos from "@/frontend/img/logo_cos.png";
 import styles from "./HomePage.module.css";
 
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const MODULES = [
-  {
-    href: "/reportes-calidad",
-    title: "Reportes de Calidad",
-    description:
-      "Procesamiento centralizado de SOUL, Célula Antifraude y Speech Analytics para evaluación de calidad.",
-    tag: "Módulo principal",
-    Icon: ClipboardCheck,
-  },
-  {
-    href: "/reportes-calidad-reincidentes",
-    title: "Reincidentes",
-    description:
-      "Análisis de errores críticos repetidos con filtros avanzados, gráficas y reportes gerenciales.",
-    tag: "Análisis profundo",
-    Icon: RefreshCw,
-  },
   {
     href: "/correlaciones",
     title: "Correlaciones",
@@ -65,8 +49,8 @@ export function HomePage() {
             </h2>
 
             <p className={styles.modulesSub}>
-              Selecciona el módulo que necesitas. Cada uno mantiene su flujo
-              de trabajo original.
+              Accede al módulo disponible para consultar el análisis cruzado de
+              indicadores.
             </p>
           </div>
 

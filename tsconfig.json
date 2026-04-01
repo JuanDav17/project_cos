@@ -32,12 +32,6 @@
       "@backend/*": [
         "./src/backend/*"
       ],
-      "@quality/*": [
-        "./src/frontend/modules/reportes-calidad/*"
-      ],
-      "@reincidentes/*": [
-        "./src/frontend/modules/reportes-calidad-reincidentes/*"
-      ],
       "@correlaciones/*": [
         "./src/frontend/modules/correlaciones/*"
       ]

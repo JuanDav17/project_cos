@@ -113,6 +113,21 @@ function requireEnv(name: string): string {
   return value;
 }
 
+function normalizeTableName(tableName: string): string {
+  const trimmed = tableName.trim();
+  const withoutUrl = trimmed.replace(/https?:\/\/.*$/i, "").trim();
+
+  if (!withoutUrl) {
+    throw new Error("El nombre de la tabla de Supabase esta vacio.");
+  }
+
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(withoutUrl)) {
+    throw new Error(`El nombre de tabla "${tableName}" no es valido.`);
+  }
+
+  return withoutUrl;
+}
+
 const supabaseUrl = requireEnv("SUPABASE_URL");
 const supabaseServiceRoleKey = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -296,17 +311,20 @@ function applyLegacySqlCompatibility(tableName: string, rows: DbRow[]): DbRow[] 
 }
 
 async function fetchAllRows(tableName: string): Promise<DbRow[]> {
+  const normalizedTableName = normalizeTableName(tableName);
   const rows: DbRow[] = [];
   let from = 0;
 
   while (true) {
     const { data, error } = await supabase
-      .from(tableName)
+      .from(normalizedTableName)
       .select("*")
       .range(from, from + PAGE_SIZE - 1);
 
     if (error) {
-      throw new Error(`No se pudo consultar la tabla "${tableName}": ${error.message}`);
+      throw new Error(
+        `No se pudo consultar la tabla "${normalizedTableName}": ${error.message}`
+      );
     }
 
     rows.push(...(data ?? []).map((row) => unwrapSingleColumnRow(row as DbRow)));
@@ -318,13 +336,18 @@ async function fetchAllRows(tableName: string): Promise<DbRow[]> {
     from += PAGE_SIZE;
   }
 
-  return applyLegacySqlCompatibility(tableName, applyLegacyRowOrder(tableName, rows));
+  return applyLegacySqlCompatibility(
+    normalizedTableName,
+    applyLegacyRowOrder(normalizedTableName, rows)
+  );
 }
 
 export function loadRowsFromSupabase(tableName: string): Promise<DbRow[]> {
-  if (!cache.has(tableName)) {
-    cache.set(tableName, fetchAllRows(tableName));
+  const normalizedTableName = normalizeTableName(tableName);
+
+  if (!cache.has(normalizedTableName)) {
+    cache.set(normalizedTableName, fetchAllRows(normalizedTableName));
   }
 
-  return cache.get(tableName)!;
+  return cache.get(normalizedTableName)!;
 }

@@ -1,9 +1,8 @@
 # GroupCOS Reportes Integrados
 
-Aplicación unificada en Next.js para los módulos:
+Aplicación en Next.js para el módulo:
 
-- `reportes-calidad`
-- `reportes-calidad-reincidentes`
+- `correlaciones`
 
 ## Ejecución
 
@@ -14,11 +13,12 @@ npm run dev
 
 ## Fuentes integradas en SQL
 
-Las bases de datos ya no se cargan desde archivos Excel en la interfaz. Ahora se consumen desde el apartado `db/`:
+Las bases de datos se consumen desde el apartado `db/`:
 
-- `db/reportes-calidad/BASE_DE_DATOS_REPORT.sql`
-- `db/reportes-calidad/BBDD_ANTIFRAUDE.sql`
-- `db/reportes-calidad/BBDD_SPEECH_ANALYTICS.sql`
-- `db/reportes-calidad-reincidentes/BASE_DE_DATOS_SOUL.sql`
+- `db/correlaciones/bd_auditorias_etb_retencion.sql`
+- `db/correlaciones/bd_celula_antifraude.sql`
+- `db/correlaciones/bd_efectividad.sql`
+- `db/correlaciones/bd_nps_fcr.sql`
+- `db/correlaciones/bd_voz_cliente.sql`
 
-Las rutas API internas leen estas fuentes y entregan la información procesada a cada módulo sin alterar la lógica de negocio existente.
+La ruta API interna de `correlaciones` lee estas fuentes y entrega la información procesada al módulo.
