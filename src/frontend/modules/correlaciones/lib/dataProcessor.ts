@@ -247,16 +247,40 @@ interface NpsData {
 }
 
 function processNpsFcr(rows: RawRow[]): Map<string, NpsData> {
-  const result = new Map<string, NpsData>();
+  const grouped = new Map<
+    string,
+    { npsSum: number; fcrSum: number; count: number; nombre: string }
+  >();
+
   for (const row of rows) {
     const doc = str(row.docasesor);
     if (!doc) continue;
+
+    if (!grouped.has(doc)) {
+      grouped.set(doc, {
+        npsSum: 0,
+        fcrSum: 0,
+        count: 0,
+        nombre: normalize(str(row.nombres_apellidos)),
+      });
+    }
+
+    const item = grouped.get(doc)!;
+    item.npsSum += num(row.nps);
+    item.fcrSum += num(row.solucion);
+    item.count += 1;
+  }
+
+  const result = new Map<string, NpsData>();
+
+  for (const [doc, item] of grouped) {
     result.set(doc, {
-      nps: num(row.nps),
-      fcr: num(row.solucion),
-      nombre: normalize(str(row.nombres_apellidos)),
+      nps: item.count > 0 ? item.npsSum / item.count : 0,
+      fcr: item.count > 0 ? item.fcrSum / item.count : 0,
+      nombre: item.nombre,
     });
   }
+
   return result;
 }
 

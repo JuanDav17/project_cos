@@ -1,14 +1,21 @@
-import { loadRowsFromSql } from "@backend/shared/sqlLoader";
+import { loadRowsFromSupabase } from "@backend/shared/supabase";
 import { processReportData } from "@quality/lib/dataProcessor";
 
 export const dynamic = "force-dynamic";
 
+const TABLE_REPORTES_CALIDAD_SOUL =
+  process.env.SUPABASE_TABLE_REPORTES_CALIDAD_SOUL ?? "base_de_datos_report";
+const TABLE_REPORTES_CALIDAD_ANTIFRAUDE =
+  process.env.SUPABASE_TABLE_REPORTES_CALIDAD_ANTIFRAUDE ?? "bbdd_antifraude";
+const TABLE_REPORTES_CALIDAD_SPEECH =
+  process.env.SUPABASE_TABLE_REPORTES_CALIDAD_SPEECH ?? "bbdd_speech_analytics";
+
 export async function GET() {
   try {
     const [soulRows, antiRows, speechRows] = await Promise.all([
-      loadRowsFromSql("db/reportes-calidad/BASE_DE_DATOS_REPORT.sql"),
-      loadRowsFromSql("db/reportes-calidad/BBDD_ANTIFRAUDE.sql"),
-      loadRowsFromSql("db/reportes-calidad/BBDD_SPEECH_ANALYTICS.sql"),
+      loadRowsFromSupabase(TABLE_REPORTES_CALIDAD_SOUL),
+      loadRowsFromSupabase(TABLE_REPORTES_CALIDAD_ANTIFRAUDE),
+      loadRowsFromSupabase(TABLE_REPORTES_CALIDAD_SPEECH),
     ]);
 
     const report = processReportData(soulRows, antiRows, speechRows);
